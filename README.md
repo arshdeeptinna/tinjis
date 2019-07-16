@@ -47,3 +47,19 @@ and the app should build and start running (after a few minutes when gradle does
 1. We will use your scripts to deploy both services to our Kubernetes cluster.
 2. Run the pay endpoint on Antaeus to try and pay the invoices using your service.
 3. Fetch all the invoices from Antaeus and confirm that roughly 50% (remember, your app should randomly fail on some of the invoices) of them will have status "PAID".
+
+
+## Discussion Points
+### Production deployment
+1. For production deployment, we can use helm charts so that it's easy to manage multiple environments. They will allow configuring  environment variables, replicas and other properties for each environment. 
+1. A build pipeline(circleci) to build and run test for each pull request
+1. When a PR is merged, deploy the new code to a staging cluster automatically where further integration test are run.
+1. This could trigger a deploy to prod which will require a manual approval.
+1. Setup logging(ELK), monitoring(prometheus) and alerting(alertmanager, slack, pagerduty).
+
+### Developer Access
+To limit a developer's access to antaeus service we can create a new role with resource permissions restricted to deployment resource for antaeus service only. Next we will need to create a role binding to bind the role with user's account.
+
+### Service Access
+One way to prevent other services from accessing payment service is 
+to use network policy which will allow ingress only for pod selector matching antaeus service. Other is by using an access token with payment service. However, I think a better solution is to use both the solutions together so that even if there is a misconfiguration in network policy or token the other will prevent unauthorized access.

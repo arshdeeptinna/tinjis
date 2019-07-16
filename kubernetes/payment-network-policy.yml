@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: payment-network-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      run: payment
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          run: antaeus
+    ports:
+    - protocol: TCP
+      port: 9000

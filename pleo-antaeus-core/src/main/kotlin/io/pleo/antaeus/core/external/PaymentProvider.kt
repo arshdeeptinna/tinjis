@@ -30,7 +30,7 @@ class PaymentProvider(
         return khttp
                 .post(url = this.paymentProviderRestEndpoint,
                         json = mapOf(
-                                "currency" to invoice.amount.currency,
+                                "currency" to invoice.amount.currency.toString(),
                                 "value" to invoice.amount.value,
                                 "customer_id" to invoice.customerId
                         )

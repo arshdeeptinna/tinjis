@@ -1,0 +1,18 @@
+FROM golang:1.11 AS builder
+
+WORKDIR /payment
+
+COPY payment/src/main.go .
+
+RUN go get -d -v && CGO_ENABLED=0 go build \
+    -installsuffix cgo \
+-o /payment/app .
+
+FROM alpine:latest  as final
+
+WORKDIR /payment
+COPY --from=builder /payment/app .
+
+EXPOSE 9000
+
+CMD ["./app"]

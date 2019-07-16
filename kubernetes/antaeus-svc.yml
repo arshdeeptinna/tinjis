@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: antaeus-service
+  labels:
+    run: antaeus
+spec:
+  type: NodePort
+  ports:
+  - port: 8000
+    protocol: TCP
+  selector:
+    run: antaeus

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: antaeus
+  labels:
+    run: antaeus
+spec:
+  selector:
+    matchLabels:
+      run: antaeus
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: antaeus
+    spec:
+      containers:
+      - name: antaeus
+        image: tinjis_pleo-antaeus:0.1
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: "4096Mi"
+            cpu: "1024m"
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PAYMENT_PROVIDER_ENDPOINT
+          value: http://payment-service.default.svc.cluster.local:9000
+        readinessProbe:
+          httpGet:
+            path: /rest/health
+            port: 8000
+          initialDelaySeconds: 180
+          timeoutSeconds: 3
+          periodSeconds: 15
+          successThreshold: 1
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /rest/health
+            port: 8000
+          initialDelaySeconds: 180
+          timeoutSeconds: 3
+          periodSeconds: 15
+          successThreshold: 1
+          failureThreshold: 1
